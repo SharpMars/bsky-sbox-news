@@ -93,7 +93,7 @@ async function run() {
 
       //max thumb size is 976.56KB
       const compressed_buffer = await sharp(thumb)
-        .webp({ preset: "picture" })
+        .webp({ preset: "picture", quality: 70, effort: 5 })
         .toBuffer();
 
       blob_data = (await agent.uploadBlob(new Blob([compressed_buffer]))).data;
@@ -133,7 +133,7 @@ async function run() {
 
       //max thumb size is 976.56KB
       const compressed_buffer = await sharp(thumb)
-        .webp({ preset: "picture" })
+        .webp({ preset: "picture", quality: 70, effort: 5 })
         .toBuffer();
 
       blob_data = (await agent.uploadBlob(new Blob([compressed_buffer]))).data;
