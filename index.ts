@@ -12,6 +12,7 @@ const known_orgs: { key: string; value: string }[] = [
   { key: "smallfish", value: "smallfi.sh" },
   { key: "carsonk", value: "carsonk.net" },
   { key: "katewoz", value: "k8woz.bsky.social" },
+  { key: "nolankicks", value: "kicks13.bsky.social" },
 ];
 
 async function run() {
