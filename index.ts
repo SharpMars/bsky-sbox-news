@@ -103,7 +103,7 @@ async function run() {
     const org_ident = post.Package!.split(".")[0];
     const org_bsky = known_orgs.find((author) => author.key === org_ident);
 
-    let text = "New community news post has been released";
+    let text = "New community news post has been released for " + post.Package;
     if (org_bsky != undefined) text += " by @" + org_bsky.value;
     text += "\n#s&box #sbox #s&boxCommunityNews";
 
