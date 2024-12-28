@@ -103,8 +103,17 @@ async function run() {
     const org_ident = post.Package!.split(".")[0];
     const org_bsky = known_orgs.find((author) => author.key === org_ident);
 
-    let text = "New community news post has been released for " + post.Package;
-    if (org_bsky != undefined) text += " by @" + org_bsky.value;
+    const package_data = await (
+      await fetch(
+        `https://services.facepunch.com/sbox/package/find?q=${post.Package}`
+      )
+    ).json();
+    const org_name: string = package_data.Packages[0].Org.Title;
+    const package_title: string = package_data.Packages[0].Title;
+
+    let text =
+      "New community news post has been released for " + package_title + " by ";
+    text += org_bsky != undefined ? "@" + org_bsky.value : org_name;
     text += "\n#s&box #sbox #s&boxCommunityNews";
 
     const rt = new RichText({
