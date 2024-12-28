@@ -1,0 +1,20 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    env_file:
+      - .env
+  webhook:
+    restart: unless-stopped
+    image: sharpmars/docker-github-hooks
+    volumes:
+      - ./:/usr/src/app/code
+      - ./hooks:/usr/src/app/hooks
+      - /var/run/docker.sock:/var/run/docker.sock
+    env_file:
+      - .env.webhook
+    expose:
+      - 3000
+    ports:
+      - "3000:3000"
