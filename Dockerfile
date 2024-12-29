@@ -8,4 +8,4 @@ COPY bun.lockb bun.lockb
 
 RUN bun install --frozen-lockfile
 
-ENTRYPOINT [ "bun", "run", "index.js" ]
+ENTRYPOINT [ "bun", "run", "index.ts" ]
