@@ -29,7 +29,7 @@ async function run() {
   if (platform_news_response.ok) {
     const news = ((await platform_news_response.json()) as News[]).reverse();
 
-    const saved_news = (await Bun.file("./.runtime/platform.json").json()) as {
+    const saved_news = (await Bun.file(".runtime/platform.json").json()) as {
       id: string;
       title: string;
     }[];
@@ -42,7 +42,7 @@ async function run() {
 
     if (new_platform_posts.length > 0)
       Bun.write(
-        "./.runtime/platform.json",
+        ".runtime/platform.json",
         JSON.stringify(
           news.map((obj) => {
             return { id: obj.Id, title: obj.Title };
@@ -54,7 +54,7 @@ async function run() {
   if (community_news_response.ok) {
     const news = ((await community_news_response.json()) as News[]).reverse();
 
-    const saved_news = (await Bun.file("./.runtime/community.json").json()) as {
+    const saved_news = (await Bun.file(".runtime/community.json").json()) as {
       id: string;
       title: string;
     }[];
@@ -70,7 +70,7 @@ async function run() {
 
     if (new_community_posts.length > 0)
       Bun.write(
-        "./.runtime/community.json",
+        ".runtime/community.json",
         JSON.stringify(
           news.map((obj) => {
             return { id: obj.Id, title: obj.Title };
