@@ -1,3 +1,5 @@
+name: bsky-sbox-news
+
 services:
   app:
     container_name: bsky-sbox-news-app
