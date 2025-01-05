@@ -1,5 +1,6 @@
 services:
   app:
+    container_name: bsky-sbox-news-app
     build:
       context: .
       dockerfile: ./Dockerfile
