@@ -9,7 +9,7 @@ services:
     env_file:
       - .env
     volumes:
-      - ./.runtime:/usr/src/app/.runtime
+      - ${CUR_DIR:-$PWD}/.runtime:/usr/src/app/.runtime
   webhook:
     restart: unless-stopped
     image: sharpmars/docker-github-hooks
@@ -17,6 +17,8 @@ services:
       - ./:/usr/src/app/code
       - ./hooks:/usr/src/app/hooks
       - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      CUR_DIR: $PWD
     env_file:
       - .env.webhook
     expose:
