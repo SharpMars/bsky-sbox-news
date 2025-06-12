@@ -3,6 +3,7 @@ import type { News } from "./news";
 import sharp from "sharp";
 import type { OutputSchema } from "@atproto/api/dist/client/types/com/atproto/repo/uploadBlob";
 import { CronJob } from "cron";
+import { $ } from "bun";
 
 const base_url = "https://sbox.game";
 const session = new CredentialSession(new URL("https://bsky.social"));
@@ -90,15 +91,18 @@ async function run() {
 
   for (const post of new_community_posts) {
     let blob_data: OutputSchema | null = null;
-    if (post.Media) {
-      const thumb = await (await fetch(post.Media)).arrayBuffer();
 
-      //max thumb size is 976.56KB
-      const compressed_buffer = await sharp(thumb)
-        .webp({ preset: "picture", quality: 70, effort: 5 })
-        .toBuffer();
+    try {
+      const imgBlob = await createThumbnailBlob(post.Media);
 
-      blob_data = (await agent.uploadBlob(new Blob([compressed_buffer]))).data;
+      if (imgBlob) {
+        blob_data = (await agent.uploadBlob(imgBlob)).data;
+      }
+    } catch (error) {
+      console.error([
+        "Failed to generate a thumbnail, skipping for now...",
+        error,
+      ]);
     }
 
     const org_ident = post.Package!.split(".")[0];
@@ -139,15 +143,18 @@ async function run() {
 
   for (const post of new_platform_posts) {
     let blob_data: OutputSchema | null = null;
-    if (post.Media) {
-      const thumb = await (await fetch(post.Media)).arrayBuffer();
 
-      //max thumb size is 976.56KB
-      const compressed_buffer = await sharp(thumb)
-        .webp({ preset: "picture", quality: 70, effort: 5 })
-        .toBuffer();
+    try {
+      const imgBlob = await createThumbnailBlob(post.Media);
 
-      blob_data = (await agent.uploadBlob(new Blob([compressed_buffer]))).data;
+      if (imgBlob) {
+        blob_data = (await agent.uploadBlob(imgBlob)).data;
+      }
+    } catch (error) {
+      console.error([
+        "Failed to generate a thumbnail, skipping for now...",
+        error,
+      ]);
     }
 
     const rt = new RichText({
@@ -171,6 +178,31 @@ async function run() {
   }
 
   await session.logout();
+}
+
+async function createThumbnailBlob(media?: string) {
+  if (!media) return null;
+
+  if (media.endsWith(".mp4")) {
+    const metadata =
+      await $`ffprobe -v quiet -print_format json -show_format ${media}`.json();
+
+    const halfTime = metadata.format.duration / 2;
+
+    const data =
+      await $`ffmpeg -i ${media} -ss ${halfTime} -frames:v 1 -f webp -compression_level 5 -quality 70 -preset picture -`.blob();
+
+    return data;
+  }
+
+  const thumb = await (await fetch(media)).arrayBuffer();
+
+  //max thumb size is 976.56KB
+  const compressed_buffer = await sharp(thumb)
+    .webp({ preset: "picture", quality: 70, effort: 5 })
+    .toBuffer();
+
+  return new Blob([compressed_buffer]);
 }
 
 const scheduleExpression = "0 * * * *"; // Run once every hour
