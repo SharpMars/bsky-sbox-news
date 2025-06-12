@@ -15,6 +15,7 @@ const known_orgs: { key: string; value: string }[] = [
   { key: "katewoz", value: "k8woz.bsky.social" },
   { key: "nolankicks", value: "kicks13.bsky.social" },
   { key: "sharpmars", value: "sharpmars.nekoweb.org" },
+  { key: "spoonstuff", value: "kuo-team.bsky.social" },
 ];
 
 async function run() {
